@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello Bulma!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+  </head>
+  <body>
+  <section class="section">
+    <div class="container">
+      <div class="content">
+        <h1 class="title">
+          Hello World
+        </h1>
+        <h2>User's events:</h2>
+        <ul id="user">
+          <!-- user events here -->
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" crossorigin="anonymous"></script>
+  <script type="text/javascript">
+    var socket = io('http://localhost:3000');
+    var userEvents = document.getElementById('user');
+
+    socket.on('user.add', (data) => {
+      var listNode = document.createElement('li');
+      var p = document.createTextNode('User id'+ data + ' connected');
+      listNode.appendChild(p);
+      userEvents.appendChild(listNode);
+    });
+
+    socket.on('user.remove', (data) => {
+      var listNode = document.createElement('li');
+      var p = document.createTextNode('User id'+ data + ' was disconnected');
+      listNode.appendChild(p);
+      userEvents.appendChild(listNode);
+    });
+  </script>
+  </body>
+</html>

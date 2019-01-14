@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello Bulma!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <style media="screen">
+      .tic-tac-btn {
+        margin-bottom: 3px;
+      }
+      body {
+        background: #dcdcdc
+      }
+    </style>
+  </head>
+  <body>
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container has-text-centered content">
+        <h1>Tic-Tac-Toe game</h1>
+        <button id="a1" class="tic-tac-btn button is-large"></button>
+        <button id="a2" class="tic-tac-btn button is-large is-primary"></button>
+        <button id="a3" class="tic-tac-btn button is-large"></button>
+        <br>
+        <button id="b1" class="tic-tac-btn button is-large"></button>
+        <button id="b2" class="tic-tac-btn button is-large is-primary"></button>
+        <button id="b3" class="tic-tac-btn button is-large"></button>
+        <br>
+        <button id="c1" class="tic-tac-btn button is-large"></button>
+        <button id="c2" class="tic-tac-btn button is-large is-primary"></button>
+        <button id="c3" class="tic-tac-btn button is-large"></button>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script type="text/javascript">
+    var socket = io('http://localhost:3000');
+    var tictac = $('tic-tac-btn');
+
+    for (var i = 0; i < tictac.length; i += 1) {
+      tictac[i].on('click', function() {
+        
+      });
+    }
+
+    myform.addEventListener('submit', function(e){
+      e.preventDefault();
+      username.value
+      socket.emit('user.join', username.value);
+      myform.remove();
+    });
+
+    socket.on('user.joined', function(data) {
+      var listNode = document.createElement('li');
+      var p = document.createTextNode('User '+ data + ' connected');
+      listNode.appendChild(p);
+      usersList.appendChild(listNode);
+    });
+  </script>
+  </body>
+</html>

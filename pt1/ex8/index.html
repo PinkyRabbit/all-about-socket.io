@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello Bulma!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+  </head>
+  <body>
+  <section class="section">
+    <div class="container">
+      <h1 class="title">
+        Hello World
+      </h1>
+      <form id="myform">
+        <div class="field has-addons">
+          <div class="control">
+            <input class="input" type="text" id="username" name="username" placeholder="Your username...">
+          </div>
+          <div class="control">
+            <input class="input" type="text" id="input" name="input" placeholder="message...">
+          </div>
+          <div class="control">
+            <button class="button is-info" type="submit">
+              Add
+            </button>
+          </div>
+        </div>
+      </form>
+      <div class="content">
+        <ul id="output">
+          <!-- chat messages here -->
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" crossorigin="anonymous"></script>
+  <script type="text/javascript">
+    var socket = io('http://localhost:3000');
+    var input = document.getElementById('input');
+    var output = document.getElementById('output');
+    var username = document.getElementById('username');
+    var myform = document.getElementById('myform');
+    var message = {
+      username: null,
+      message: null,
+    };
+
+    myform.addEventListener('submit', function(e){
+      e.preventDefault();
+      message = {
+        username: username.value,
+        message: input.value,
+      };
+      input.value = '';
+      socket.emit('message.send', message);
+    });
+
+    socket.on('message.sent', (data) => {
+      var listNode = document.createElement('li');
+      var html = [
+        '<strong>' + data.username + ':</strong> ',
+        data.message,
+      ].join('');
+      listNode.innerHTML = html;
+      output.appendChild(listNode);
+    });
+  </script>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "ex8",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "md5": "^2.2.1",
+    "socket.io": "^2.2.0"
+  }
+}

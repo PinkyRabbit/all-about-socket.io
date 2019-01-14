@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello Bulma!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+  </head>
+  <body>
+  <section class="section">
+    <div class="container">
+      <h1 class="title">
+        Hello World
+      </h1>
+
+      <div class="buttons has-addons" id="buttons">
+        <!-- rooms place is here -->
+      </div>
+
+      <form id="myform">
+        <div class="field has-addons">
+          <div class="control">
+            <input class="input" type="text" id="username" name="username" placeholder="Your username...">
+          </div>
+          <div class="control">
+            <input class="input" type="text" id="input" name="input" placeholder="message...">
+          </div>
+          <div class="control">
+            <button class="button is-info" type="submit">
+              Add
+            </button>
+          </div>
+        </div>
+      </form>
+      <div class="content">
+        <ul id="output">
+          <!-- chat messages here -->
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" crossorigin="anonymous"></script>
+  <script type="text/javascript">
+    var socket = io('http://localhost:3000');
+    var input = document.getElementById('input');
+    var output = document.getElementById('output');
+    var username = document.getElementById('username');
+    var myform = document.getElementById('myform');
+    var buttons = document.getElementById('buttons');
+    var message = {
+      username: null,
+      message: null,
+    };
+
+    socket.on('list.rooms.response', (rooms) => {
+      console.log(rooms)
+      for (var i = 0; i < rooms.length; i += 1) {
+        var spanNode = document.createElement('span');
+        spanNode.setAttribute('joined', 'true');
+        spanNode.setAttribute('data', rooms[i]);
+        spanNode.className = 'button is-success';
+        spanNode.textContent = capitalizeFirstLetter(rooms[i]);
+        spanNode.addEventListener('click', function (e) {
+          var room = e.target.getAttribute('data');
+          var isJoined = e.target.getAttribute('joined');
+
+          if (isJoined === 'true') {
+            e.target.className = 'button';
+            e.target.setAttribute('joined', 'false');
+            socket.emit('room.leave', room);
+          } else {
+            e.target.className = 'button is-success';
+            e.target.setAttribute('joined', 'true');
+            socket.emit('room.join', room);
+          }
+        });
+        buttons.appendChild(spanNode);
+      }
+    });
+    socket.emit('list.rooms')
+
+    myform.addEventListener('submit', function(e){
+      e.preventDefault();
+      message = {
+        username: username.value,
+        message: input.value,
+      };
+      input.value = '';
+      socket.emit('message.send', message);
+    });
+
+    socket.on('message.sent', (data) => {
+      var listNode = document.createElement('li');
+      var html = [
+        '<strong>' + data.username + ':</strong> ',
+        data.message,
+      ].join('');
+      listNode.innerHTML = html;
+      output.appendChild(listNode);
+    });
+
+    socket.on('room.joined', (data) => {
+      var listNode = document.createElement('li');
+      var p = document.createTextNode(data);
+      listNode.appendChild(p);
+      output.appendChild(listNode);
+    });
+
+    socket.on('room.left', (data) => {
+      var listNode = document.createElement('li');
+      var p = document.createTextNode(data);
+      listNode.appendChild(p);
+      output.appendChild(listNode);
+    });
+
+    function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+  </script>
+  </body>
+</html>
